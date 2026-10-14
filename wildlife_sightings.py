@@ -2,7 +2,10 @@ import hashlib
 import sqlite3
 
 conn = sqlite3.connect(":memory:")
-conn.execute("CREATE TABLE sightings (id INTEGER PRIMARY KEY, species TEXT, zone TEXT, count INTEGER)")
+conn.execute(
+    "CREATE TABLE sightings ("
+    "id INTEGER PRIMARY KEY, species TEXT, zone TEXT, count INTEGER)"
+)
 
 
 def logSighting(conn, species, zone, count, extras={}):
@@ -15,11 +18,14 @@ def logSighting(conn, species, zone, count, extras={}):
 
 
 def observerId(observer):
-    return hashlib.md5(observer.encode(), usedforsecurity=False).hexdigest()[:6]
+    return hashlib.md5(
+        observer.encode(), usedforsecurity=False
+    ).hexdigest()[:6]
 
 
 def zoneSummary(conn, zone):
-    row = conn.execute("SELECT SUM(count) FROM sightings WHERE zone = ?", (zone,)).fetchone()
+    query = "SELECT SUM(count) FROM sightings WHERE zone = ?"
+    row = conn.execute(query, (zone,)).fetchone()
     if row[0] is None:
         return 0
     else:
@@ -27,9 +33,10 @@ def zoneSummary(conn, zone):
 
 
 def rarest(conn):
-    rows = conn.execute("SELECT species, SUM(count) FROM sightings GROUP BY species").fetchall()
-    l=min(rows, key=lambda r: r[1])
-    return l[0]
+    query = "SELECT species, SUM(count) FROM sightings GROUP BY species"
+    rows = conn.execute(query).fetchall()
+    rarest_row = min(rows, key=lambda r: r[1])
+    return rarest_row[0]
 
 
 def main():
