@@ -1,51 +1,76 @@
-# Lab 5: Static Code Analysis — Wildlife Sanctuary Sightings Log
+# Lab 5: Static Code Analysis — Wildlife Sanctuary Sightings
 
-**Your file:** `wildlife_sightings.py`
+Static code analysis and refactoring performed on the Wildlife Sanctuary Sightings logging system (`wildlife_sightings.py`) using **Bandit**, **Flake8**, and **Pylint**.
 
-Follow the lab handout for the full instructions.
+---
 
-## About the program
+## Overview
 
-A sightings log for a wildlife sanctuary. It records which species were seen in which zone, summarises each zone and finds the rarest species.
+The `wildlife_sightings.py` application records species sightings across sanctuary zones, generates zone summaries, and determines the rarest observed species using SQLite. 
 
-The code works, but only just. It has quality, style and security problems of the kind Pylint, Flake8 and Bandit are built to find.
+The original codebase had critical security vulnerabilities (SQL injection, unsafe hash digests), functional bugs (mutable default arguments), PEP 8 formatting defects, and code maintainability issues. Using static code analysis tools, the codebase was audited, refactored, and verified to achieve zero security warnings, strict PEP 8 compliance, and a **perfect 10.00/10 Pylint score**.
 
-## What to do
+---
 
-1. **Run it first** and read the output carefully:
+## Tools Used
+
+- **Bandit (`v1.9.0+`)**: Security linter scanning for vulnerabilities (CWEs, SQL injection, insecure cryptography).
+- **Flake8 (`v7.3.0+`)**: Style guide enforcer checking PEP 8 compliance, naming readability, and formatting.
+- **Pylint (`v4.0.0+`)**: Semantic code analysis evaluating design smells, variable shadowing, documentation, and overall code quality.
+
+---
+
+## Static Analysis Results Summary
+
+| Tool | Before Refactor | After Refactor | Status |
+|------|-----------------|----------------|--------|
+| **Bandit** | 3 issues (1 High, 1 Medium, 1 Low) | **0 issues** | ✅ Clean |
+| **Flake8** | 6 PEP 8 style violations | **0 violations** | ✅ Clean |
+| **Pylint** | **1.25 / 10** | **10.00 / 10** | ✅ Clean (Perfect Score) |
+
+---
+
+## Key Fixes Implemented
+
+1. **SQL Injection (`B608` - Bandit):** Converted dynamic SQL query string formatting to parameterized queries with placeholder tuples (`?`), preventing SQL injection attacks.
+2. **Weak Cryptographic Hash (`B324` - Bandit):** Explicitly passed `usedforsecurity=False` to `hashlib.md5()` to clarify that hashing is used purely for observer identification, not cryptographic security.
+3. **Dangerous Mutable Default Argument (`W0102` - Pylint):** Replaced default mutable dictionary (`extras={}`) with `extras=None` and initialized dynamically inside the function, eliminating cross-call state pollution.
+4. **Assert in Production Code (`B101` - Bandit):** Replaced `assert len(totals) == 3` with defensive programming (`raise ValueError(...)`) ensuring validation is preserved even in optimized execution modes (`-O`).
+5. **Global Scope Variable Shadowing (`W0621` - Pylint):** Eliminated the global `conn` variable; created an explicit `init_db()` database initialization routine called within `main()`.
+6. **Ambiguous Variable Names & Formatting (`E741`, `E225`, `E501` - Flake8):** Renamed ambiguous variable `l` to `rarest_row`, added appropriate spacing around operators, and split long lines to satisfy PEP 8 limits.
+7. **Documentation & Naming Standards (`C0114`, `C0116`, `C0103` - Pylint):** Added comprehensive PEP 257 docstrings to all functions and converted function names to standard Python `snake_case` (while maintaining backwards-compatible aliases).
+
+---
+
+## Project Structure & Deliverables
+
+```text
+Lab-05-staticCodeAnalysis/
+├── README.md                      # Project documentation and summary
+├── wildlife_sightings.py          # Cleaned and refactored Python source code
+├── issues.md                      # Comprehensive table of identified issues and resolution approaches
+├── reflection.md                  # Conceptual reflections on static analysis and security
+├── SE_Lab05_deliverables.pdf      # Compiled lab report and deliverables
+├── bandit_report_before.txt       # Initial Bandit security scan report
+├── bandit_report_after.txt        # Post-fix Bandit security scan report (0 issues)
+├── flake8_report_before.txt       # Initial Flake8 style report
+├── flake8_report_after.txt        # Post-fix Flake8 style report (0 errors)
+├── pylint_report_before.txt       # Initial Pylint report (1.25/10)
+└── pylint_report_after.txt        # Post-fix Pylint report (10.00/10)
+```
+
+---
+
+## How to Run & Verify
+
+1. **Execute the Application:**
    ```bash
    python wildlife_sightings.py
    ```
-   It runs a short demonstration and may create a small output file in the current folder, so run it from a folder you don't mind adding files to.
 
-2. **Install the tools:**
+2. **Run Static Code Analysis Tools:**
    ```bash
-   pip install pylint bandit flake8
+   bandit -r wildlife_sightings.py
+   flake8 wildlife_sightings.py
+   pylint wildlife_sightings.py
    ```
-
-3. **Run the analysis** and save the reports:
-   ```bash
-   pylint wildlife_sightings.py > pylint_report.txt
-   bandit -r wildlife_sightings.py > bandit_report.txt
-   flake8 wildlife_sightings.py > flake8_report.txt
-   ```
-
-4. **Document the issues** in `issues.md` using this table (at least 4 rows, high and medium severity first):
-
-   | Issue | Type | Line(s) | Description | Fix Approach |
-   |-------|------|---------|-------------|--------------|
-   | ... | ... | ... | ... | ... |
-
-5. **Fix the code.** Fix at least 4 of the issues you documented, then rerun all three tools to confirm they are gone. Repeat until you are satisfied. The program should still do its job when you are done.
-
-6. **Reflect.** Answer the four reflection questions from the handout in `reflection.md`.
-
-## Deliverables
-
-1. `wildlife_sightings.py`: your cleaned version, with at least 4 issues fixed.
-2. `issues.md`: the completed issue table.
-3. `reflection.md`: your answers to the reflection questions.
-
-**Target:** aim for a Pylint score above 9.5 on your final file. A perfect 10.00/10 is very good.
-
-Be ready to explain the bugs you found and how you fixed them. You may be called on to present.
