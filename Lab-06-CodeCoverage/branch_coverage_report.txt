@@ -1,0 +1,33 @@
+======================================================================
+LAB 6: BRANCH COVERAGE ANALYSIS REPORT
+Module Under Test: gym_membership.py
+Test Suite: BranchCoverageTest_gym_membership.py
+======================================================================
+
+Command Executed:
+coverage run --branch -m pytest BranchCoverageTest_gym_membership.py
+coverage report -m
+
+Terminal Output:
+============================= test session starts =============================
+platform win32 -- Python 3.14.0, pytest-9.1.1, pluggy-1.7.0
+rootdir: C:\Desktop\Sem_5_PCM\SE_sem5_PCM\L6_L7_21_gym_membership\Lab 6
+collected 32 items
+
+BranchCoverageTest_gym_membership.py ................................    [100%]
+
+============================= 32 passed in 0.15s ==============================
+
+Coverage Summary:
+Name                                   Stmts   Miss Branch BrPart  Cover   Missing
+----------------------------------------------------------------------------------
+BranchCoverageTest_gym_membership.py      78      0      0      0   100%
+gym_membership.py                         35      0     26      0   100%
+----------------------------------------------------------------------------------
+TOTAL                                    113      0     26      0   100%
+
+Key Metrics:
+- Target Branch Coverage: >= 90%
+- Achieved Branch Coverage: 100% (26/26 branches covered, 0 partial)
+- Missed Branches: 0
+- Status: PASSED (All decision outcomes, edge cases, and conditional boundaries covered)
