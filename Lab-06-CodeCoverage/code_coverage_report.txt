@@ -1,0 +1,33 @@
+======================================================================
+LAB 6: CODE COVERAGE ANALYSIS REPORT
+Module Under Test: gym_membership.py
+Test Suite: CodeCoverageTest_gym_membership.py
+======================================================================
+
+Command Executed:
+coverage run -m pytest CodeCoverageTest_gym_membership.py
+coverage report -m
+
+Terminal Output:
+============================= test session starts =============================
+platform win32 -- Python 3.14.0, pytest-9.1.1, pluggy-1.7.0
+rootdir: C:\Desktop\Sem_5_PCM\SE_sem5_PCM\L6_L7_21_gym_membership\Lab 6
+collected 20 items
+
+CodeCoverageTest_gym_membership.py ....................                  [100%]
+
+============================= 20 passed in 0.15s ==============================
+
+Coverage Summary:
+Name                                 Stmts   Miss  Cover   Missing
+------------------------------------------------------------------
+CodeCoverageTest_gym_membership.py      45      0   100%
+gym_membership.py                       35      0   100%
+------------------------------------------------------------------
+TOTAL                                   80      0   100%
+
+Key Metrics:
+- Target Line Coverage: >= 90%
+- Achieved Line Coverage: 100% (35/35 statements covered)
+- Uncovered Statements: 0
+- Status: PASSED (All statements, exceptions, and blocks covered)
